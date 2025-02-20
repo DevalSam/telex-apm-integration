@@ -1,0 +1,39 @@
+{
+  "name": "cross-platform-apm",
+  "type": "interval",
+  "version": "1.0.0",
+  "description": "Cross-platform APM and crash reporting for Flutter, React Native, and .NET MAUI applications",
+  "author": "Your Name",
+  "repository": "https://github.com/telex-integrations/telex-apm-integration",
+  "intervals": {
+    "performance_metrics": {
+      "seconds": 300,
+      "description": "Collect performance metrics"
+    },
+    "crash_reports": {
+      "seconds": 60,
+      "description": "Check for new crashes"
+    },
+    "daily_summary": {
+      "seconds": 86400,
+      "description": "Generate daily summary report"
+    }
+  },
+  "settings": {
+    "platforms": {
+      "flutter": true,
+      "react_native": true,
+      "maui": true
+    },
+    "metrics": {
+      "performance": true,
+      "crashes": true,
+      "memory": true,
+      "network": true
+    },
+    "alerting": {
+      "crash_threshold": 5,
+      "performance_threshold": 80
+    }
+  }
+}
