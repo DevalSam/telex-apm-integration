@@ -1,0 +1,72 @@
+{
+  "data": {
+    "date": {
+      "created_at": "2023-10-01",
+      "updated_at": "2023-10-01"
+    },
+    "descriptions": {
+      "app_description": "Comprehensive APM and crash reporting integration for Flutter, React Native, and .NET MAUI platforms.",
+      "app_logo": "https://example.com/logo.png",
+      "app_name": "APM Crash Reporter",
+      "app_url": "https://example.com",
+      "background_color": "#4A90E2"
+    },
+    "integration_category": "Monitoring & Logging",
+    "integration_type": "interval",
+    "is_active": false,
+    "output": [
+      {
+        "label": "crash_reports",
+        "value": true
+      },
+      {
+        "label": "performance_metrics",
+        "value": true
+      }
+    ],
+    "key_features": [
+      "Real-time crash reporting.",
+      "Performance metrics for Flutter, React Native, and .NET MAUI.",
+      "User experience data aggregation.",
+      "Periodic reporting via Telex channels."
+    ],
+    "permissions": {
+      "monitoring_user": {
+        "always_online": true,
+        "display_name": "APM Monitor"
+      }
+    },
+    "settings": [
+      {
+        "label": "interval",
+        "type": "text",
+        "required": true,
+        "default": "* * * * *", // Every minute
+        "description": "Interval for crash report aggregation (crontab syntax)."
+      },
+      {
+        "label": "API Key",
+        "type": "text",
+        "required": true,
+        "default": "",
+        "description": "API key for accessing the APM service."
+      },
+      {
+        "label": "Crash Threshold",
+        "type": "number",
+        "required": false,
+        "default": 10,
+        "description": "Minimum number of crashes to trigger a report."
+      },
+      {
+        "label": "Notify on Critical Crashes",
+        "type": "checkbox",
+        "required": true,
+        "default": true,
+        "description": "Enable notifications for critical crashes."
+      }
+    ],
+    "tick_url": "https://example.com/tick", // URL for interval processing
+    "target_url": "https://example.com/target" // Optional URL for data collection
+  }
+}
