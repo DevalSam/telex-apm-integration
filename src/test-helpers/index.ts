@@ -1,40 +1,57 @@
-// test-helpers/index.ts
 
-import { MetricsData, CrashReport } from '../src/types/telex';
 
-export const createMockMetrics = (overrides: Partial<MetricsData> = {}): MetricsData => ({
-  platform: 'test',
+import { MetricsData, CrashReport } from '../types';
+import { Logger } from '../utils/logger';
+
+interface MockMetricsOptions {
+  platform?: string;
+  metrics?: Partial<MetricsData['metrics']>;
+}
+
+interface MockCrashOptions {
+  error?: string;
+  deviceInfo?: Partial<CrashReport['deviceInfo']>;
+}
+
+export const createMockMetrics = (options: MockMetricsOptions = {}): MetricsData => ({
+  platform: options.platform || 'test',
   timestamp: Date.now(),
   metrics: {
     memory: 50,
     cpu: 30,
     fps: 60,
     frameTime: 16.67,
-    ...overrides?.metrics
-  },
-  ...overrides
+    ...options.metrics
+  }
 });
 
-export const createMockCrash = (overrides: Partial<CrashReport> = {}): CrashReport => ({
+export const createMockCrash = (options: MockCrashOptions = {}): CrashReport => ({
   platform: 'test',
   timestamp: Date.now(),
-  error: 'Test error',
+  error: options.error || 'Test error',
   stackTrace: 'Test stack trace',
   deviceInfo: {
     os: 'test',
     version: '1.0',
     device: 'test-device',
-    ...overrides?.deviceInfo
-  },
-  ...overrides
+    ...options.deviceInfo
+  }
 });
 
-export const sleep = (ms: number): Promise<void> => 
-  new Promise(resolve => setTimeout(resolve, ms));
-
-export const createMockLogger = () => ({
+export const createMockLogger = (): jest.Mocked<Logger> => ({
   info: jest.fn(),
   error: jest.fn(),
   warn: jest.fn(),
   debug: jest.fn()
 });
+
+export const sleep = (ms: number): Promise<void> => 
+  new Promise(resolve => setTimeout(resolve, ms));
+
+export const createMockError = (message: string, withStack = true): Error => {
+  const error = new Error(message);
+  if (!withStack) {
+    delete error.stack;
+  }
+  return error;
+};

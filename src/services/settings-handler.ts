@@ -1,5 +1,4 @@
 
-
 import { Logger } from '../utils/logger';
 
 export interface APMSettings {
@@ -16,7 +15,7 @@ export interface APMSettings {
 
 export class SettingsHandler {
   private logger: Logger;
-  private settings: APMSettings;
+  private settings!: APMSettings; // Using definite assignment assertion
 
   constructor() {
     this.logger = new Logger('SettingsHandler');

@@ -1,37 +1,55 @@
 
+// src/services/apm-integration.ts
+import { MetricsData, CrashReport } from '../types';
 import { MetricsAggregator } from './metrics-aggregator';
+import { Logger } from '../utils/logger';
 
 export class APMIntegration {
   private metricsAggregator: MetricsAggregator;
+  private logger: Logger;
 
   constructor() {
     this.metricsAggregator = new MetricsAggregator();
+    this.logger = new Logger('APMIntegration');
   }
 
-  async handleMetrics(metrics: unknown): Promise<void> {
+  async handleMetrics(metrics: MetricsData | null): Promise<void> {
     try {
       if (!metrics) {
         throw new Error('Invalid metrics data');
       }
       await this.metricsAggregator.processMetrics(metrics);
     } catch (error) {
-      console.error('Metrics processing failed:', error);
-      throw new Error(`Metrics processing failed: ${(error as Error).message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error('Metrics processing failed:', errorMessage);
+      throw new Error(`Metrics processing failed: ${errorMessage}`);
     }
   }
 
-  async handleCrash(crashData: unknown): Promise<void> {
+  async handleCrash(crashData: CrashReport | null): Promise<void> {
     try {
-      if (!crashData || typeof crashData !== 'object') {
+      if (!crashData) {
         throw new Error('Invalid crash data');
       }
-      console.warn('Crash detected:', crashData);
-      // Handle crash reporting logic here (e.g., send to an external API)
+      this.logger.warn('Crash detected:', crashData);
+      
+      // Convert crash to metrics format for processing
+      const metrics: MetricsData = {
+        platform: crashData.platform,
+        timestamp: crashData.timestamp,
+        metrics: {
+          memory: 0,
+          cpu: 0,
+          fps: 0,
+          frameTime: 0
+        }
+      };
+      
+      await this.metricsAggregator.processMetrics(metrics);
     } catch (error) {
-      console.error('Crash processing failed:', error);
-      throw new Error(`Crash processing failed: ${(error as Error).message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      this.logger.error('Crash processing failed:', errorMessage);
+      throw new Error(`Crash processing failed: ${errorMessage}`);
     }
   }
 }
-
-
