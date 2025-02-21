@@ -1,8 +1,9 @@
 
 
+
 import { APMIntegration } from '../services/apm-integration';
 import { MetricsAggregator } from '../services/metrics-aggregator';
-import { createMockMetrics, createMockCrash } from '../../test-helpers';
+import { createMockMetrics, createMockCrash } from '../test-helpers';  // Updated import path
 
 jest.mock('../services/metrics-aggregator');
 jest.mock('../utils/logger');
