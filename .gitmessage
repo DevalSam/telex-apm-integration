@@ -1,0 +1,20 @@
+# <type>(<scope>): <subject>
+# Types: feat, fix, docs, style, refactor, test, chore
+# Scope: service name or module (optional)
+# Subject: imperative mood, no period at end
+# Example: feat(metrics): add CPU usage monitoring
+#
+# Body (optional): More detailed description
+#
+# Footer (optional):
+# BREAKING CHANGE: description
+# Closes #123, #456
+#
+# Rules:
+# - Type is required and must be lowercase
+# - Subject line should be 72 chars or less
+# - Use imperative mood in subject line
+# - No period at end of subject line
+# - Separate subject from body with blank line
+# - Use body to explain what and why (not how)
+# - Can use multiple lines with "-" for bullet points

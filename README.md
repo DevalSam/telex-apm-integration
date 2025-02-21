@@ -1,6 +1,6 @@
 # Cross-Platform APM Integration for Telex
 
-A comprehensive Application Performance Monitoring (APM) integration for Telex that supports Flutter, React Native, and .NET MAUI applications.
+Application Performance Monitoring (APM) integration for Telex that supports Flutter, React Native, and .NET MAUI applications.
 
 ## Features
 
@@ -10,31 +10,29 @@ A comprehensive Application Performance Monitoring (APM) integration for Telex t
 - Platform-specific metrics collection
 - Custom alerting thresholds
 
-## Prerequisites
-
-- Node.js (v16 or higher)
-- A Telex organization account
-- Access to the target mobile/desktop applications
-
 ## Installation
 
 1. Add the integration to your Telex organization:
-```bash
-# Using the Telex CLI (if available)
-telex integration add cross-platform-apm
 
-# Or through the Telex dashboard
-# Navigate to Integrations > Add New > Custom Integration
+```bash
+# Using the Telex Dashboard
+1. Navigate to Integrations > Add New
+2. Select "Custom Integration"
+3. Enter the JSON URL: [Your hosted JSON URL]
+4. Configure the settings as needed
 ```
 
-2. Configure the integration:
+2. Configure your channels:
 ```json
 {
-  "organization_id": "your-org-id",
-  "channels": {
-    "metrics_channel": "your-metrics-channel-id",
-    "alerts_channel": "your-alerts-channel-id"
-  },
+  "metrics_channel": "your-metrics-channel-id",
+  "alerts_channel": "your-alerts-channel-id"
+}
+```
+
+3. Enable platforms:
+```json
+{
   "platforms": {
     "flutter": true,
     "react_native": true,
@@ -43,26 +41,7 @@ telex integration add cross-platform-apm
 }
 ```
 
-## Usage
-
-### Performance Monitoring
-
-The integration automatically collects and reports:
-- Memory usage
-- CPU utilization
-- Frame rates
-- Network latency
-- Custom metrics
-
-### Crash Reporting
-
-Automatically captures:
-- Stack traces
-- Device information
-- User journey
-- Error context
-
-## Development
+## Development Setup
 
 1. Clone the repository:
 ```bash
@@ -80,37 +59,39 @@ npm install
 npm test
 ```
 
-4. Start development:
-```bash
-npm run dev
-```
-
 ## Testing
 
 ```bash
 # Run all tests
 npm test
 
-# Run specific platform tests
-npm test:flutter
-npm test:react-native
-npm test:maui
+# Run with coverage
+npm run test:coverage
 
-# Run integration tests
-npm test:integration
+# Run specific tests
+npm run test:platforms
+npm run test:services
 ```
 
-## Contributing
+## Deployment
 
-Please read [CONTRIBUTING.md](docs/CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
+1. Host the integration JSON:
+   - Copy `config/integration.json` to a publicly accessible URL
+   - Update the URL in your Telex organization settings
+
+2. Configure organization:
+   - Create dedicated channels for metrics and alerts
+   - Set up platform-specific configurations
+   - Configure alerting thresholds
+
+3. Enable monitoring:
+   - Start the integration
+   - Verify metrics collection
+   - Test crash reporting
 
 ## Screenshots
 
-[Screenshots will be added showing the integration in action]
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+[Add screenshots of the integration in action]
 
 ## Support
 

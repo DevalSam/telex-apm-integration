@@ -7,9 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [16.x, 18.x]
@@ -31,21 +30,21 @@ jobs:
     - name: Run tests
       run: npm test
       
-    - name: Build
-      run: npm run build
-      
-    - name: Upload coverage reports
+    - name: Upload coverage
       uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        
+
   deploy:
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
     - name: Deploy Integration JSON
       run: |
-        # Add deployment steps for integration JSON
+        # Add deployment steps here once hosting location is determined
         echo "Deploying integration JSON..."

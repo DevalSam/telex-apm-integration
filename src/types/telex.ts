@@ -1,33 +1,40 @@
-// src/types/telex.ts
 
-export interface TelexMessage {
-  channelId: string;
-  content: string;
-  metadata?: Record<string, any>;
-}
 
-export interface TelexConfig {
-  apiKey?: string;
-  organization: string;
-  intervalConfig: {
-    performanceCheck: number;
-    crashReport: number;
+export interface MetricsData {
+  platform: string;
+  timestamp: number;
+  metrics: {
+    memory: number;
+    cpu: number;
+    fps: number;
+    frameTime: number;
   };
 }
 
-// Mock Telex SDK interface
-export class TelexClient {
-  constructor(config: TelexConfig) {
-    // Initialize with config
-  }
+export interface CrashReport {
+  platform: string;
+  timestamp: number;
+  error: string;
+  stackTrace?: string;
+  deviceInfo: {
+    os: string;
+    version: string;
+    device: string;
+  };
+}
 
-  async sendMessage(message: TelexMessage): Promise<void> {
-    // Mock implementation
-    console.log('Sending message to Telex:', message);
-  }
-
-  async initialize(): Promise<void> {
-    // Mock initialization
-    console.log('Initializing Telex client');
-  }
+export interface APMConfig {
+  organization: string;
+  authToken: string;
+  metricsChannelId: string;
+  crashChannelId: string;
+  platforms: {
+    flutter?: boolean;
+    reactNative?: boolean;
+    maui?: boolean;
+  };
+  intervals: {
+    performanceCheck: number;  // in seconds
+    crashReport: number;       // in seconds
+  };
 }
