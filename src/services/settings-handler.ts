@@ -1,5 +1,4 @@
 
-
 import { Logger } from '../utils/logger';
 
 export interface APMSettings {
@@ -16,8 +15,8 @@ export interface APMSettings {
 
 const DEFAULT_SETTINGS: APMSettings = {
   collection_interval: '*/5 * * * *',
-  metrics_channel: 'default-metrics',
-  alerts_channel: 'default-alerts',
+  metrics_channel: 'default',
+  alerts_channel: 'default',
   monitored_platforms: [],
   memory_threshold: 90,
   cpu_threshold: 80,
@@ -28,11 +27,10 @@ const DEFAULT_SETTINGS: APMSettings = {
 
 export class SettingsHandler {
   private logger: Logger;
-  private settings: APMSettings;
+  private settings: APMSettings = { ...DEFAULT_SETTINGS };
 
   constructor() {
     this.logger = new Logger('SettingsHandler');
-    this.settings = { ...DEFAULT_SETTINGS };  // Initialize with default settings
   }
 
   public loadSettings(settings: Partial<APMSettings>): APMSettings {
@@ -49,12 +47,10 @@ export class SettingsHandler {
   }
 
   private validateSettings(settings: Partial<APMSettings>): void {
-    // Required text fields
     if (settings.collection_interval && !this.isValidCrontab(settings.collection_interval)) {
       throw new Error('Invalid collection interval format');
     }
 
-    // Validate thresholds
     if (settings.memory_threshold !== undefined && 
         (typeof settings.memory_threshold !== 'number' || 
          settings.memory_threshold < 0 || 
@@ -78,8 +74,8 @@ export class SettingsHandler {
 
   private parseSettings(settings: Partial<APMSettings>): APMSettings {
     return {
-      ...this.settings,  // Start with current settings
-      ...settings,       // Override with new settings
+      ...this.settings,
+      ...settings,
       monitored_platforms: Array.isArray(settings.monitored_platforms) 
         ? settings.monitored_platforms 
         : typeof settings.monitored_platforms === 'string'

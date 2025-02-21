@@ -1,17 +1,18 @@
 
+
 {
   "compilerOptions": {
     "target": "es2018",
     "module": "commonjs",
     "outDir": "./dist",
-    "rootDirs": ["./src"],  // Changed from rootDir to rootDirs
+    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "*": ["*"]
+      "*": ["src/*"]
     }
   },
   "include": [
@@ -19,6 +20,8 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "coverage",
+    "tests"
   ]
 }
