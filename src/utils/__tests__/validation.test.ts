@@ -1,7 +1,7 @@
-// src/utils/__tests__/validation.test.ts
+
 
 import { validateMetrics, validateCrashReport, ValidationError } from '../validation';
-import { createMockMetrics, createMockCrash } from '../../../test-helpers';
+import { createMockMetrics, createMockCrash } from '../../test-helpers';
 
 describe('Validation Utils', () => {
   describe('validateMetrics', () => {
@@ -65,7 +65,11 @@ describe('Validation Utils', () => {
 
     it('validates device info', () => {
       const crash = createMockCrash();
-      delete crash.deviceInfo.os;
+      // Create a new object without the os property instead of using delete
+      crash.deviceInfo = {
+        version: crash.deviceInfo.version,
+        device: crash.deviceInfo.device
+      };
       expect(() => validateCrashReport(crash))
         .toThrow('OS is required and must be a string');
     });

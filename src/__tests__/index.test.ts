@@ -1,9 +1,8 @@
 
 
-
 import { APMIntegration } from '../services/apm-integration';
 import { MetricsAggregator } from '../services/metrics-aggregator';
-import { createMockMetrics, createMockCrash } from '../test-helpers';  // Updated import path
+import { createMockMetrics, createMockCrash } from '../test-helpers';
 
 jest.mock('../services/metrics-aggregator');
 jest.mock('../utils/logger');
@@ -14,8 +13,8 @@ describe('APMIntegration', () => {
 
   beforeEach(() => {
     mockMetricsAggregator = {
-      processMetrics: jest.fn()
-    } as any;
+      processMetrics: jest.fn().mockResolvedValue(undefined)
+    } as jest.Mocked<MetricsAggregator>;
 
     (MetricsAggregator as jest.Mock).mockImplementation(() => mockMetricsAggregator);
     integration = new APMIntegration();
