@@ -1,5 +1,5 @@
 
-// src/services/apm-integration.ts
+
 import { MetricsData, CrashReport } from '../types';
 import { MetricsAggregator } from './metrics-aggregator';
 import { Logger } from '../utils/logger';
@@ -13,28 +13,34 @@ export class APMIntegration {
     this.logger = new Logger('APMIntegration');
   }
 
-  async handleMetrics(metrics: MetricsData | null): Promise<void> {
+  async handleMetrics(metricsData: MetricsData | null): Promise<void> {
     try {
-      if (!metrics) {
+      if (!metricsData) {
         throw new Error('Invalid metrics data');
       }
-      await this.metricsAggregator.processMetrics(metrics);
+
+      // Validate metrics data structure
+      if (!metricsData.platform || !metricsData.timestamp || !metricsData.metrics) {
+        throw new Error('Missing required metrics fields');
+      }
+
+      await this.metricsAggregator.processMetrics(metricsData);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      this.logger.error('Metrics processing failed:', errorMessage);
-      throw new Error(`Metrics processing failed: ${errorMessage}`);
+      this.logger.error('Metrics processing failed:', error);
+      throw error instanceof Error ? error : new Error('Unknown error in metrics processing');
     }
   }
 
   async handleCrash(crashData: CrashReport | null): Promise<void> {
     try {
       if (!crashData) {
-        throw new Error('Invalid crash data');
+        throw new Error('Invalid crash report');
       }
+
       this.logger.warn('Crash detected:', crashData);
-      
-      // Convert crash to metrics format for processing
-      const metrics: MetricsData = {
+
+      // Convert crash to metrics format
+      const crashMetrics: MetricsData = {
         platform: crashData.platform,
         timestamp: crashData.timestamp,
         metrics: {
@@ -44,12 +50,11 @@ export class APMIntegration {
           frameTime: 0
         }
       };
-      
-      await this.metricsAggregator.processMetrics(metrics);
+
+      await this.metricsAggregator.processMetrics(crashMetrics);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      this.logger.error('Crash processing failed:', errorMessage);
-      throw new Error(`Crash processing failed: ${errorMessage}`);
+      this.logger.error('Crash processing failed:', error);
+      throw error instanceof Error ? error : new Error('Unknown error in crash processing');
     }
   }
 }

@@ -1,5 +1,5 @@
 
-import { MetricsData, CrashReport } from '../types/telex';
+import { MetricsData, CrashReport } from '../types';
 
 export class ValidationError extends Error {
   constructor(message: string) {
@@ -8,9 +8,13 @@ export class ValidationError extends Error {
   }
 }
 
-export const validateMetrics = (metrics: MetricsData): void => {
+export function validateMetrics(metrics: MetricsData): void {
   if (!metrics) {
-    throw new ValidationError('Metrics data is required');
+    throw new ValidationError('Metrics cannot be null or undefined');
+  }
+
+  if (typeof metrics !== 'object') {
+    throw new ValidationError('Metrics must be an object');
   }
 
   if (!metrics.platform || typeof metrics.platform !== 'string') {
@@ -22,7 +26,7 @@ export const validateMetrics = (metrics: MetricsData): void => {
   }
 
   if (!metrics.metrics || typeof metrics.metrics !== 'object') {
-    throw new ValidationError('Metrics object is required');
+    throw new ValidationError('Metrics data is required and must be an object');
   }
 
   const { memory, cpu, fps, frameTime } = metrics.metrics;
@@ -42,11 +46,15 @@ export const validateMetrics = (metrics: MetricsData): void => {
   if (typeof frameTime !== 'number' || frameTime < 0) {
     throw new ValidationError('Frame time must be a positive number');
   }
-};
+}
 
-export const validateCrashReport = (crash: CrashReport): void => {
+export function validateCrashReport(crash: CrashReport): void {
   if (!crash) {
-    throw new ValidationError('Crash report is required');
+    throw new ValidationError('Crash report cannot be null or undefined');
+  }
+
+  if (typeof crash !== 'object') {
+    throw new ValidationError('Crash report must be an object');
   }
 
   if (!crash.platform || typeof crash.platform !== 'string') {
@@ -62,20 +70,18 @@ export const validateCrashReport = (crash: CrashReport): void => {
   }
 
   if (!crash.deviceInfo || typeof crash.deviceInfo !== 'object') {
-    throw new ValidationError('Device info is required');
+    throw new ValidationError('Device info is required and must be an object');
   }
 
-  const { os, version, device } = crash.deviceInfo;
-
-  if (!os || typeof os !== 'string') {
+  if (!crash.deviceInfo.os || typeof crash.deviceInfo.os !== 'string') {
     throw new ValidationError('OS is required and must be a string');
   }
 
-  if (!version || typeof version !== 'string') {
+  if (!crash.deviceInfo.version || typeof crash.deviceInfo.version !== 'string') {
     throw new ValidationError('Version is required and must be a string');
   }
 
-  if (!device || typeof device !== 'string') {
-    throw new ValidationError('Device is required and must be a string');
+  if (!crash.deviceInfo.device || typeof crash.deviceInfo.device !== 'string') {
+    throw new ValidationError('Device name is required and must be a string');
   }
-};
+}

@@ -1,8 +1,14 @@
 
-
-// Export core functionality
+export * from './types';
 export { APMIntegration } from './services/apm-integration';
-export { MetricsData, CrashReport } from './types/telex';
+export { MetricsAggregator } from './services/metrics-aggregator';
+export { SettingsHandler, type APMSettings } from './services/settings-handler';
+export { ValidationError } from './utils/validation';
 
-// Note: We don't export test helpers from the main index
-// They should be imported directly from their location when needed for tests
+// Re-export types for external use
+export type {
+  MetricsData,
+  CrashReport,
+  APMConfig,
+  PlatformMonitor
+} from './types';

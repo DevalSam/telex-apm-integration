@@ -3,8 +3,8 @@ export interface MetricsData {
   platform: string;
   timestamp: number;
   metrics: {
-    memory: number;     // Memory usage in MB
-    cpu: number;        // CPU usage percentage
+    memory: number;     // Memory usage in percentage (0-100)
+    cpu: number;        // CPU usage percentage (0-100)
     fps: number;        // Frames per second
     frameTime: number;  // Time per frame in milliseconds
   };
@@ -41,4 +41,24 @@ export interface APMConfig {
 export interface PlatformMonitor {
   collectMetrics(): Promise<MetricsData>;
   handleCrash(error: Error): Promise<CrashReport>;
+}
+
+// Additional interfaces for internal use
+export interface LoggerConfig {
+  level: 'debug' | 'info' | 'warn' | 'error';
+  prefix?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface MetricsThresholds {
+  memory: number;
+  cpu: number;
+  fps: number;
+  frameTime: number;
+}
+
+export interface AnomalyDetectionConfig {
+  thresholds: MetricsThresholds;
+  sensitivity: 'High' | 'Medium' | 'Low';
+  alertOnConsecutive: number;
 }
