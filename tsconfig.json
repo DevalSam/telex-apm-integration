@@ -1,28 +1,98 @@
-
-
+// tsconfig.json
 {
   "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
-    "lib": ["es2018", "dom"],
-    "declaration": true,
-    "outDir": "./dist/",
-    "rootDir": "src",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "test-helpers/*": ["test-helpers/*"]
+    },
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "moduleResolution": "node",
-    "baseUrl": "src",
-    "paths": {
-      "@services/*": ["services/*"],
-      "@helpers/*": ["helpers/*"],
-      "@utils/*": ["utils/*"],
-      "@types/*": ["types/*"]
-    }
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*",
+    "test-helpers/**/*"
+  ]
 }
 
+
+export interface MetricsData {
+  platform: string;
+  timestamp: number;
+  metrics: Record<string, unknown>;
+}
+
+// src/services/apm-integration.ts
+import { MetricsData } from '../types/metrics';
+
+export function sendMetrics(data: MetricsData) {
+  // Your implementation
+}
+
+// Example usage:
+const metricsData: MetricsData = {
+  platform: 'web',
+  timestamp: Date.now(),
+  metrics: {
+    // Your metrics here
+  }
+};
+sendMetrics(metricsData);
+
+// src/services/settings-handler.ts
+interface Settings {
+  // Your settings interface
+}
+
+export class SettingsHandler {
+  private settings: Settings;
+
+  constructor() {
+    this.settings = this.loadSettings();
+  }
+
+  private loadSettings(): Settings {
+    // Your implementation
+    return {};
+  }
+}
+
+// src/utils/__tests__/validation.test.ts
+interface TestObject {
+  optionalProp?: string;
+  requiredProp: string;
+}
+
+describe('validation', () => {
+  it('should handle property deletion', () => {
+    const obj: TestObject = {
+      optionalProp: 'test',
+      requiredProp: 'required'
+    };
+    
+    // Only delete optional properties
+    delete obj.optionalProp;
+    
+    // If you must delete a required property, use type assertion
+    // (obj as Partial<TestObject>).requiredProp = undefined;
+  });
+});
+
+// test-helpers/index.ts
+export const testHelpers = {
+  // Your test helper functions
+};
+
+// src/__tests__/index.test.ts
+import { testHelpers } from '../../test-helpers';
+
+// src/services/__tests__/metrics-aggregator.test.ts
+import { testHelpers } from '../../../test-helpers';
+
+// src/utils/__tests__/validation.test.ts
+import { testHelpers } from '../../../test-helpers';
+
+// src/helpers/__tests__/test-helpers.test.ts
+import { testHelpers } from '../test-helpers';
