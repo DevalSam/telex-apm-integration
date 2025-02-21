@@ -2,18 +2,22 @@
   "compilerOptions": {
     "target": "es2018",
     "module": "commonjs",
-    "rootDir": "./src",  // Updated to point to src directory
+    "rootDir": "./src",
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": "./src",  // Updated to point to src directory
+    "baseUrl": "./src",
     "paths": {
-      "*": ["*"]  // This allows imports relative to baseUrl
+      "*": ["*"]
     }
   },
   "include": [
-    "src/**/*"  // Updated to only include files under src
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
   ]
 }

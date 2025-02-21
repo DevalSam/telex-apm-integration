@@ -1,14 +1,13 @@
 
-
 import { MetricsData, CrashReport } from '../types';
 import { Logger } from '../utils/logger';
 
-interface MockMetricsOptions {
+export interface MockMetricsOptions {
   platform?: string;
   metrics?: Partial<MetricsData['metrics']>;
 }
 
-interface MockCrashOptions {
+export interface MockCrashOptions {
   error?: string;
   deviceInfo?: Partial<CrashReport['deviceInfo']>;
 }

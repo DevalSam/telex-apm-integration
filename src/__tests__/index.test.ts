@@ -1,5 +1,4 @@
 
-
 import { APMIntegration } from '../services/apm-integration';
 import { MetricsAggregator } from '../services/metrics-aggregator';
 import { createMockMetrics, createMockCrash } from '../test-helpers';
