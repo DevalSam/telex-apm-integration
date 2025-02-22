@@ -12,32 +12,26 @@ describe('APMIntegration', () => {
   let mockMetricsAggregator: jest.MockedObject<MetricsAggregator>;
 
   beforeEach(() => {
-    const mockLogger = {
+    jest.clearAllMocks();
+
+    // Mock the MetricsAggregator class
+    const mockAggregator = new MetricsAggregator() as jest.MockedObject<MetricsAggregator>;
+    
+    // Mock methods
+    mockAggregator.processMetrics = jest.fn().mockResolvedValue(undefined);
+    mockAggregator.getMetricsHistory = jest.fn().mockReturnValue([]);
+    
+    mockMetricsAggregator = mockAggregator;
+    (MetricsAggregator as jest.Mock).mockImplementation(() => mockMetricsAggregator);
+
+    // Mock Logger
+    (Logger as jest.Mock).mockImplementation(() => ({
       info: jest.fn(),
       error: jest.fn(),
       warn: jest.fn(),
-      debug: jest.fn(),
-      prefix: 'MockLogger',
-      defaultMetadata: {},
-      createLogMetadata: jest.fn(),
-      formatMessage: jest.fn()
-    } as unknown as jest.Mocked<Logger>;
+      debug: jest.fn()
+    }));
 
-    const mockAggregator = {
-      processMetrics: jest.fn().mockResolvedValue(undefined),
-      getMetricsHistory: jest.fn().mockReturnValue([]),
-      analyzeMetrics: jest.fn(),
-      clearHistory: jest.fn(),
-      setHistoryLimit: jest.fn(),
-      getMetricsSummary: jest.fn(),
-      calculateStatistics: jest.fn(),
-      calculateAverage: jest.fn(),
-      detectAnomalies: jest.fn(),
-      logger: mockLogger
-    } as unknown as jest.MockedObject<MetricsAggregator>;
-
-    mockMetricsAggregator = mockAggregator;
-    (MetricsAggregator as jest.Mock).mockImplementation(() => mockMetricsAggregator);
     integration = new APMIntegration();
   });
 

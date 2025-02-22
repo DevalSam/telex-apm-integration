@@ -81,7 +81,11 @@ describe('Validation Utils', () => {
 
     it('validates error message', () => {
       const crash = createMockCrash();
-      crash.error = '';
+      Object.defineProperty(crash, 'error', {
+        value: '',
+        configurable: true,
+        writable: true
+      });
       expect(() => validateCrashReport(crash))
         .toThrow('Error message is required and must be a string');
     });
