@@ -1,6 +1,6 @@
 // src/utils/logger.ts
 import winston from 'winston';
-import type { LogLevel, LogMetadata, LoggerOptions } from './logger-types';
+import type { LogLevel, LogMetadata, LoggerOptions } from './logger-types.js';
 
 const LOG_LEVELS: Record<LogLevel, number> = {
   error: 0,
@@ -111,15 +111,3 @@ export class Logger {
     logger.debug(this.formatMessage(message), logMetadata);
   }
 }
-
-// Example usage:
-// const logger = new Logger('SettingsHandler');
-// logger.error('Failed to load settings:', {
-//   context: {
-//     method: 'loadSettings',
-//     error: 'Invalid format'
-//   },
-//   data: { 
-//     settingsAttempted: true 
-//   }
-// });

@@ -1,8 +1,5 @@
-
-
-
 import axios from 'axios';
-import { TelexAPI } from '../telex-api';
+import { TelexAPI } from '../telex-api.js';
 
 // Properly mock axios
 jest.mock('axios');

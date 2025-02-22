@@ -1,6 +1,6 @@
-import { MetricsData } from '../types';
-import { Logger } from '../utils/logger';
-import { validateMetrics } from '../utils/validation';
+import { MetricsData } from '../types/index.js';
+import { Logger } from '../utils/logger.js';
+import { validateMetrics } from '../utils/validation.js';
 
 export class MetricsAggregator {
   private historyLimit: number = 100;

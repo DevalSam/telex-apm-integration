@@ -1,6 +1,7 @@
 // File: src/services/types.ts
+
+// Settings interfaces
 export interface Settings {
-    // Basic settings properties
     enabled: boolean;
     environment?: 'development' | 'production' | 'staging';
     apiKey?: string;
@@ -10,21 +11,49 @@ export interface Settings {
     debug?: boolean;
 }
 
-// APM specific settings extending base Settings
 export interface APMSettings extends Settings {
     monitored_platforms?: string[] | string;
 }
 
-// Settings update payload type
 export interface SettingsUpdatePayload {
     key: keyof Settings;
     value: any;
 }
 
+// Metrics interfaces
+export interface MetricsData {
+    platform: string;
+    timestamp: number;
+    metrics: {
+        memory: number;
+        cpu: number;
+        fps: number;
+        frameTime: number;
+    };
+}
+
+// Crash Report interface
+export interface CrashReport {
+    platform: string;
+    timestamp: number;
+    error: string;
+}
+
 // Logger types
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
-// Logger interface
+export interface LogMetadata {
+    message: string;
+    level: LogLevel;
+    timestamp: number;
+    context: {
+        service: string;
+        method: string;
+        platform?: string;
+    };
+    data?: any;
+}
+
 export interface Logger {
     debug(message: string, ...args: any[]): void;
     info(message: string, ...args: any[]): void;

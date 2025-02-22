@@ -1,6 +1,4 @@
-
-
-import { FlutterMonitor } from '../flutter';
+import { FlutterMonitor } from '../flutter.js';
 
 describe('FlutterMonitor', () => {
   let monitor: FlutterMonitor;

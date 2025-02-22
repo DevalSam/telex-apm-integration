@@ -1,89 +1,76 @@
-// src/__tests__/helpers/test-helpers.ts
-import {
-  createMockMetrics,
-  createMockCrash,
-} from '../../test-helpers';
+interface Metrics {
+  memory: number;
+  cpu: number;
+  fps: number;
+  frameTime: number;
+}
 
-describe('Test Helpers', () => {
-  describe('createMockMetrics', () => {
-    it('creates metrics with default values', () => {
-      const metrics = createMockMetrics();
-      
-      expect(metrics).toEqual({
-        platform: 'test-platform',
-        timestamp: expect.any(Number),
-        metrics: {
-          memory: 50,
-          cpu: 30,
-          fps: 60,
-          frameTime: 16.67,
-        },
-      });
-    });
+interface DeviceInfo {
+  os: string;
+  version: string;
+  device: string;
+}
 
-    it('applies overrides correctly', () => {
-      const overrides = {
-        platform: 'custom-platform',
-        metrics: {
-          memory: 100,
-          cpu: 80,
-        },
-      };
-      
-      const metrics = createMockMetrics(overrides);
-      
-      expect(metrics).toEqual({
-        platform: 'custom-platform',
-        timestamp: expect.any(Number),
-        metrics: {
-          memory: 100,
-          cpu: 80,
-          fps: 60,
-          frameTime: 16.67,
-        },
-      });
-    });
-  });
+interface MetricsData {
+  platform: string;
+  timestamp: number;
+  metrics: Metrics;
+}
 
-  describe('createMockCrash', () => {
-    it('creates crash report with default values', () => {
-      const crash = createMockCrash();
-      
-      expect(crash).toEqual({
-        platform: 'test-platform',
-        timestamp: expect.any(Number),
-        error: 'Test error message',
-        stackTrace: 'Error: Test error\n    at <anonymous>:1:1',
-        deviceInfo: {
-          os: 'TestOS',
-          version: '1.0.0',
-          device: 'TestDevice',
-        },
-      });
-    });
+interface CrashReport {
+  platform: string;
+  timestamp: number;
+  error: string;
+  stackTrace: string;
+  deviceInfo: DeviceInfo;
+}
 
-    it('applies overrides correctly', () => {
-      const overrides = {
-        platform: 'custom-platform',
-        error: 'Custom error',
-        deviceInfo: {
-          os: 'CustomOS',
-        },
-      };
-      
-      const crash = createMockCrash(overrides);
-      
-      expect(crash).toEqual({
-        platform: 'custom-platform',
-        timestamp: expect.any(Number),
-        error: 'Custom error',
-        stackTrace: 'Error: Test error\n    at <anonymous>:1:1',
-        deviceInfo: {
-          os: 'CustomOS',
-          version: '1.0.0',
-          device: 'TestDevice',
-        },
-      });
-    });
-  });
-});
+// Type for nested partial objects
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
+};
+
+export function createMockMetrics(overrides: DeepPartial<MetricsData> = {}): MetricsData {
+  const defaultMetrics: MetricsData = {
+    platform: 'test-platform',
+    timestamp: Date.now(),
+    metrics: {
+      memory: 50,
+      cpu: 30,
+      fps: 60,
+      frameTime: 16.67,
+    },
+  };
+
+  return {
+    ...defaultMetrics,
+    ...overrides,
+    metrics: {
+      ...defaultMetrics.metrics,
+      ...(overrides.metrics || {}),
+    },
+  };
+}
+
+export function createMockCrash(overrides: DeepPartial<CrashReport> = {}): CrashReport {
+  const defaultCrash: CrashReport = {
+    platform: 'test-platform',
+    timestamp: Date.now(),
+    error: 'Test error message',
+    stackTrace: 'Error: Test error\n    at <anonymous>:1:1',
+    deviceInfo: {
+      os: 'TestOS',
+      version: '1.0.0',
+      device: 'TestDevice',
+    },
+  };
+
+  return {
+    ...defaultCrash,
+    ...overrides,
+    deviceInfo: {
+      ...defaultCrash.deviceInfo,
+      ...(overrides.deviceInfo || {}),
+    },
+  };
+}

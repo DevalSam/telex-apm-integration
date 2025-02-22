@@ -1,5 +1,3 @@
-// src/types/index.ts
-
 /** Available log levels */
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
 

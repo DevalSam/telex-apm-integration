@@ -1,6 +1,6 @@
-import { MetricsData, CrashReport, LogMetadata } from '../types';
-import { MetricsAggregator } from './metrics-aggregator';
-import { Logger } from '../utils/logger';
+import { MetricsData, CrashReport, LogMetadata } from '../types/index.js';
+import { MetricsAggregator } from './metrics-aggregator.js';
+import { Logger } from '../utils/logger.js';
 
 const DEFAULT_METRICS: MetricsData = {
   platform: 'unknown',

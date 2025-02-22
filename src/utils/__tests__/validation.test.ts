@@ -1,5 +1,5 @@
-import { validateMetrics, validateCrashReport, ValidationError } from '../validation';
-import { createMockMetrics, createMockCrash } from '../../test-helpers';
+import { validateMetrics, validateCrashReport, ValidationError } from '../validation.js';
+import { createMockMetrics, createMockCrash } from '../../test-helpers/index.js';
 
 describe('Validation Utils', () => {
   describe('validateMetrics', () => {

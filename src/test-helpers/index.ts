@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
-import { MetricsData, CrashReport } from '../types';
-import { Logger } from '../utils/logger';
+import { MetricsData, CrashReport } from '../types/index.js';
+import { Logger } from '../utils/logger.js';
 
 export interface MockMetricsOptions {
   platform?: string;

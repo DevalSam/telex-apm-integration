@@ -1,4 +1,4 @@
-import type { MetricsData, CrashReport } from '../types';
+import type { MetricsData, CrashReport } from '../types.js'; // Added .js extension
 
 export class ValidationError extends Error {
   constructor(message: string) {

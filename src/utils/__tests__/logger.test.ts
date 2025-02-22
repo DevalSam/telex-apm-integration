@@ -1,5 +1,5 @@
-import { Logger } from '../logger';
-import type { LogMetadata } from '../logger-types';
+import { Logger } from '../logger.js';
+import type { LogMetadata } from '../logger-types.js';
 
 describe('Logger', () => {
   let logger: Logger;

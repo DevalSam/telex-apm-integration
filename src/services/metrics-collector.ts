@@ -1,5 +1,5 @@
-import { Logger } from '../utils/logger';
-import { MetricsAggregator } from './metrics-aggregator';
+import { Logger } from '../utils/logger.js';
+import { MetricsAggregator } from './metrics-aggregator.js';
 
 export class MetricsCollector {
   private intervals: Map<string, NodeJS.Timeout>;

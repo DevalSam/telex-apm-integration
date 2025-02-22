@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Logger } from '../utils/logger';
+import { Logger } from '../utils/logger.js';
 
 interface MetricsData {
   [key: string]: unknown;

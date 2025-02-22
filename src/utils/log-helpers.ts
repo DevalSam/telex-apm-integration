@@ -1,5 +1,5 @@
 // src/utils/log-helpers.ts
-import { CrashReport, LogMetadata } from '../types';
+import { CrashReport, LogMetadata } from '../types/index.js';
 
 export function createCrashMetadata(crashData: CrashReport): LogMetadata {
   return {
