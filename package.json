@@ -4,13 +4,13 @@
   "description": "Cross-platform APM integration for Telex",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc", 
-    "start": "node dist/index.js", 
+    "build": "tsc",
+    "start": "node dist/index.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "lint": "eslint . --ext .ts",
-    "dev": "ts-node-dev --respawn src/index.ts" 
+    "dev": "ts-node-dev --respawn src/index.ts"
   },
   "keywords": [
     "telex",
