@@ -1,8 +1,8 @@
-// src/__tests__/index.test.ts
 import type { MetricsData, CrashReport } from '../types';
 import { APMIntegration } from '../services/apm-integration';
 import { MetricsAggregator } from '../services/metrics-aggregator';
 import { createMockMetrics, createMockCrash } from '../test-helpers';
+import { Logger } from '../utils/logger';
 
 jest.mock('../services/metrics-aggregator');
 jest.mock('../utils/logger');
@@ -12,6 +12,17 @@ describe('APMIntegration', () => {
   let mockMetricsAggregator: jest.MockedObject<MetricsAggregator>;
 
   beforeEach(() => {
+    const mockLogger = {
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn(),
+      prefix: 'MockLogger',
+      defaultMetadata: {},
+      createLogMetadata: jest.fn(),
+      formatMessage: jest.fn()
+    } as unknown as jest.Mocked<Logger>;
+
     const mockAggregator = {
       processMetrics: jest.fn().mockResolvedValue(undefined),
       getMetricsHistory: jest.fn().mockReturnValue([]),
@@ -22,15 +33,10 @@ describe('APMIntegration', () => {
       calculateStatistics: jest.fn(),
       calculateAverage: jest.fn(),
       detectAnomalies: jest.fn(),
-      logger: {
-        info: jest.fn(),
-        error: jest.fn(),
-        warn: jest.fn(),
-        debug: jest.fn(),
-      }
-    };
+      logger: mockLogger
+    } as unknown as jest.MockedObject<MetricsAggregator>;
 
-    mockMetricsAggregator = mockAggregator as unknown as jest.MockedObject<MetricsAggregator>;
+    mockMetricsAggregator = mockAggregator;
     (MetricsAggregator as jest.Mock).mockImplementation(() => mockMetricsAggregator);
     integration = new APMIntegration();
   });

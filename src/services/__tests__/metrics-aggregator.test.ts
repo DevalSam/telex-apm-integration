@@ -1,4 +1,3 @@
-// src/services/__tests__/metrics-aggregator.test.ts
 import { MetricsAggregator } from '../metrics-aggregator';
 import { createMockMetrics } from '../../test-helpers';
 
@@ -74,12 +73,10 @@ describe('MetricsAggregator', () => {
 
   describe('statistics calculation', () => {
     test('calculates averages correctly', async () => {
-      // First set of metrics
       await aggregator.processMetrics(createMockMetrics({
         metrics: { memory: 40, cpu: 20, fps: 55, frameTime: 16 }
       }));
       
-      // Second set of metrics
       await aggregator.processMetrics(createMockMetrics({
         metrics: { memory: 60, cpu: 40, fps: 65, frameTime: 17 }
       }));

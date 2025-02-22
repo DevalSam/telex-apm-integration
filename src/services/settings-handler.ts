@@ -26,10 +26,11 @@ const DEFAULT_SETTINGS: APMSettings = {
 
 export class SettingsHandler {
   private logger: Logger;
-  private settings: APMSettings = { ...DEFAULT_SETTINGS };
+  private settings: APMSettings;
 
   constructor() {
     this.logger = new Logger('SettingsHandler');
+    this.settings = { ...DEFAULT_SETTINGS };
   }
 
   public loadSettings(settings: Partial<APMSettings>): APMSettings {
@@ -76,12 +77,13 @@ export class SettingsHandler {
 
   private parseSettings(settings: Partial<APMSettings>): APMSettings {
     let parsedPlatforms: string[] = this.settings.monitored_platforms;
-    
+
     if (settings.monitored_platforms !== undefined) {
       if (Array.isArray(settings.monitored_platforms)) {
         parsedPlatforms = settings.monitored_platforms;
       } else if (typeof settings.monitored_platforms === 'string') {
-        parsedPlatforms = (settings.monitored_platforms as string).split(',').map((platform: string): string => platform.trim());
+        const platformString = settings.monitored_platforms as string;
+        parsedPlatforms = platformString.split(',').map(platform => platform.trim());
       }
     } else {
       parsedPlatforms = [];

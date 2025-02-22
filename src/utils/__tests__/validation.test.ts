@@ -70,7 +70,6 @@ describe('Validation Utils', () => {
       };
       expect(() => validateCrashReport(crash)).not.toThrow();
 
-      // Now test with missing os
       crash.deviceInfo = {
         version: crash.deviceInfo.version,
         device: crash.deviceInfo.device,
