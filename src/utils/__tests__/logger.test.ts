@@ -1,6 +1,5 @@
-
-
 import { Logger } from '../logger';
+import type { LogMetadata } from '../logger-types';
 
 describe('Logger', () => {
   let logger: Logger;
@@ -17,7 +16,9 @@ describe('Logger', () => {
 
   test('should log info messages', () => {
     const message = 'Test info message';
-    const meta = { key: 'value' };
+    const meta: LogMetadata = { 
+      key: 'value' 
+    };
     
     logger.info(message, meta);
   });
@@ -26,7 +27,10 @@ describe('Logger', () => {
     const message = 'Test error message';
     const error = new Error('Test error');
     
-    logger.error(message, error);
+    logger.error(message, {
+      error: error.message,
+      stack: error.stack
+    });
   });
 
   test('should log warning messages', () => {
@@ -37,7 +41,9 @@ describe('Logger', () => {
 
   test('should log debug messages', () => {
     const message = 'Test debug message';
-    const meta = { debug: true };
+    const meta: LogMetadata = { 
+      debug: true 
+    };
     
     logger.debug(message, meta);
   });

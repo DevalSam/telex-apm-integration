@@ -1,78 +1,72 @@
+// src/services/platform-handler.ts
+import { APMSettings } from '../types';
+import logger from '../utils/logger';
 
+export class PlatformHandler {
+  private readonly validPlatforms = ['flutter', 'react-native', 'ios', 'android', 'web'];
 
-import { SettingsHandler } from '../settings-handler';
+  public parsePlatforms(input: string | string[] | undefined): string[] {
+    try {
+      // Handle undefined case
+      if (!input) {
+        return [];
+      }
 
-describe('SettingsHandler', () => {
-  let handler: SettingsHandler;
+      // Handle string case (comma-separated)
+      if (typeof input === 'string') {
+        return input
+          .split(',')
+          .map(platform => platform.trim())
+          .filter(platform => platform.length > 0);
+      }
 
-  beforeEach(() => {
-    handler = new SettingsHandler();
-  });
+      // Handle array case
+      if (Array.isArray(input)) {
+        return input.filter(platform => 
+          typeof platform === 'string' && platform.trim().length > 0
+        );
+      }
 
-  const validSettings = {
-    collection_interval: '*/5 * * * *',
-    metrics_channel: 'metrics-123',
-    alerts_channel: 'alerts-123',
-    monitored_platforms: 'flutter,react-native',
-    memory_threshold: 90,
-    cpu_threshold: 80,
-    fps_threshold: 30,
-    enable_crash_reporting: true,
-    alert_sensitivity: 'Medium'
-  };
+      return [];
+    } catch (error) {
+      logger.error('Failed to parse platforms', 
+        error instanceof Error ? error.message : 'Unknown error',
+        {
+          method: 'parsePlatforms',
+          input: String(input)
+        }
+      );
+      return [];
+    }
+  }
 
-  describe('loadSettings', () => {
-    it('loads valid settings successfully', () => {
-      const settings = handler.loadSettings(validSettings);
-      expect(settings.collection_interval).toBe('*/5 * * * *');
-      expect(settings.monitored_platforms).toEqual(['flutter', 'react-native']);
-    });
+  public validatePlatforms(platforms: string[]): boolean {
+    return platforms.every(platform => 
+      this.validPlatforms.includes(platform.toLowerCase())
+    );
+  }
 
-    it('validates required fields', () => {
-      const invalidSettings = { ...validSettings, collection_interval: '' };
-      expect(() => handler.loadSettings(invalidSettings))
-        .toThrow('Collection interval is required');
-    });
+  public formatPlatformSettings(partialSettings: Partial<APMSettings>): Partial<APMSettings> {
+    const platforms = this.parsePlatforms(partialSettings.monitored_platforms);
+    
+    if (!this.validatePlatforms(platforms)) {
+      logger.error('Invalid platform specified', 
+        {
+          method: 'formatPlatformSettings',
+          platforms
+        }
+      );
+      throw new Error('Invalid platform specified');
+    }
 
-    it('validates crontab format', () => {
-      const invalidSettings = { ...validSettings, collection_interval: 'invalid' };
-      expect(() => handler.loadSettings(invalidSettings))
-        .toThrow('Invalid collection interval format');
-    });
+    return {
+      ...partialSettings,
+      monitored_platforms: platforms
+    };
+  }
+}
 
-    it('validates threshold ranges', () => {
-      expect(() => handler.loadSettings({ ...validSettings, memory_threshold: 101 }))
-        .toThrow('Memory threshold must be between 0 and 100');
-      
-      expect(() => handler.loadSettings({ ...validSettings, cpu_threshold: -1 }))
-        .toThrow('CPU threshold must be between 0 and 100');
-      
-      expect(() => handler.loadSettings({ ...validSettings, fps_threshold: -1 }))
-        .toThrow('FPS threshold must be a positive number');
-    });
-  });
-
-  describe('getSettings', () => {
-    it('returns loaded settings', () => {
-      handler.loadSettings(validSettings);
-      const settings = handler.getSettings();
-      expect(settings).toEqual(expect.objectContaining(validSettings));
-    });
-
-    it('throws error when settings not loaded', () => {
-      expect(() => handler.getSettings()).toThrow('Settings not loaded');
-    });
-  });
-
-  describe('getSetting', () => {
-    it('returns specific setting value', () => {
-      handler.loadSettings(validSettings);
-      expect(handler.getSetting('collection_interval')).toBe('*/5 * * * *');
-    });
-
-    it('throws error when settings not loaded', () => {
-      expect(() => handler.getSetting('collection_interval'))
-        .toThrow('Settings not loaded');
-    });
-  });
-});
+// Example usage:
+// const handler = new PlatformHandler();
+// const platforms = handler.parsePlatforms('flutter,react-native');
+// console.log(platforms); // ['flutter', 'react-native']

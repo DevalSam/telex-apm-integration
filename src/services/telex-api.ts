@@ -1,7 +1,17 @@
-
-
 import axios from 'axios';
 import { Logger } from '../utils/logger';
+
+interface MetricsData {
+  [key: string]: unknown;
+}
+
+interface CrashData {
+  [key: string]: unknown;
+}
+
+interface IntegrationSettings {
+  [key: string]: unknown;
+}
 
 export class TelexAPI {
   private baseUrl: string;
@@ -16,7 +26,7 @@ export class TelexAPI {
     this.logger = new Logger('TelexAPI');
   }
 
-  private async makeRequest(method: string, endpoint: string, data?: any) {
+  private async makeRequest<T>(method: string, endpoint: string, data?: unknown): Promise<T> {
     try {
       const response = await axios({
         method,
@@ -29,29 +39,35 @@ export class TelexAPI {
       });
       return response.data;
     } catch (error) {
+      this.logger.error('API request failed:', {
+        message: error instanceof Error ? error.message : String(error),
+        context: {
+          endpoint,
+          method
+        }
+      });
+      
       if (error instanceof Error) {
-        this.logger.error('API request failed:', error.message);
         throw error;
       } else {
-        this.logger.error('API request failed:', String(error));
         throw new Error('Unknown API error');
       }
     }
   }
 
-  public async sendMetricsMessage(channelId: string, metrics: any): Promise<void> {
-    await this.makeRequest('POST', `/organisations/${this.orgId}/channels/${channelId}/messages`, {
+  public async sendMetricsMessage(channelId: string, metrics: MetricsData): Promise<void> {
+    await this.makeRequest<void>('POST', `/organisations/${this.orgId}/channels/${channelId}/messages`, {
       content: JSON.stringify(metrics, null, 2)
     });
   }
 
-  public async sendCrashAlert(channelId: string, crash: any): Promise<void> {
-    await this.makeRequest('POST', `/organisations/${this.orgId}/channels/${channelId}/messages`, {
+  public async sendCrashAlert(channelId: string, crash: CrashData): Promise<void> {
+    await this.makeRequest<void>('POST', `/organisations/${this.orgId}/channels/${channelId}/messages`, {
       content: JSON.stringify(crash, null, 2)
     });
   }
 
-  public async updateIntegrationSettings(integrationId: string, settings: any): Promise<void> {
-    await this.makeRequest('PUT', `/organisations/${this.orgId}/integrations/${integrationId}/settings`, settings);
+  public async updateIntegrationSettings(integrationId: string, settings: IntegrationSettings): Promise<void> {
+    await this.makeRequest<void>('PUT', `/organisations/${this.orgId}/integrations/${integrationId}/settings`, settings);
   }
 }

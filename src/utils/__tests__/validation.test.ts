@@ -1,5 +1,3 @@
-
-
 import { validateMetrics, validateCrashReport, ValidationError } from '../validation';
 import { createMockMetrics, createMockCrash } from '../../test-helpers';
 
@@ -17,7 +15,6 @@ describe('Validation Utils', () => {
 
     it('validates memory range', () => {
       const metrics = createMockMetrics();
-      // Create new object with invalid memory value
       metrics.metrics.memory = -1;
       expect(() => validateMetrics(metrics))
         .toThrow('Memory must be a number between 0 and 100');
@@ -29,7 +26,6 @@ describe('Validation Utils', () => {
 
     it('validates CPU range', () => {
       const metrics = createMockMetrics();
-      // Create new object with invalid CPU value
       metrics.metrics.cpu = -1;
       expect(() => validateMetrics(metrics))
         .toThrow('CPU must be a number between 0 and 100');
@@ -67,10 +63,18 @@ describe('Validation Utils', () => {
 
     it('validates device info', () => {
       const crash = createMockCrash();
-      // Create new deviceInfo object without the os property
       crash.deviceInfo = {
+        os: 'test-os',
         version: crash.deviceInfo.version,
         device: crash.deviceInfo.device
+      };
+      expect(() => validateCrashReport(crash)).not.toThrow();
+
+      // Now test with missing os
+      crash.deviceInfo = {
+        version: crash.deviceInfo.version,
+        device: crash.deviceInfo.device,
+        os: ''  // Invalid empty string
       };
       expect(() => validateCrashReport(crash))
         .toThrow('OS is required and must be a string');

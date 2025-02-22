@@ -1,4 +1,4 @@
-
+import { jest } from '@jest/globals';
 import { MetricsData, CrashReport } from '../types';
 import { Logger } from '../utils/logger';
 
@@ -37,12 +37,22 @@ export const createMockCrash = (options: MockCrashOptions = {}): CrashReport => 
   }
 });
 
-export const createMockLogger = (): jest.Mocked<Logger> => ({
-  info: jest.fn(),
-  error: jest.fn(),
-  warn: jest.fn(),
-  debug: jest.fn()
-});
+class MockLogger extends Logger {
+  constructor() {
+    super('TestLogger');
+  }
+}
+
+export const createMockLogger = () => {
+  const logger = new MockLogger();
+  return {
+    ...logger,
+    info: jest.fn(),
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn()
+  } as unknown as jest.Mocked<Logger>;
+};
 
 export const sleep = (ms: number): Promise<void> => 
   new Promise(resolve => setTimeout(resolve, ms));

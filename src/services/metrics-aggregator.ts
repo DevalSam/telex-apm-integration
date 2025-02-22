@@ -1,37 +1,21 @@
-
+// src/services/metrics-aggregator.ts
 import { MetricsData } from '../types';
 import { Logger } from '../utils/logger';
-import { validateMetrics } from '../utils/validation';
-
-interface MetricsStatistics {
-  memory: { current: number; average: number };
-  cpu: { current: number; average: number };
-  fps: { current: number; average: number };
-  frameTime: { current: number; average: number };
-}
-
-interface MetricsAnomaly {
-  type: 'memory' | 'cpu' | 'fps' | 'frameTime';
-  value: number;
-  threshold: number;
-}
 
 export class MetricsAggregator {
   private metricsHistory: Map<string, MetricsData[]>;
-  private readonly historyLimit: number = 100;
+  private historyLimit: number;
   private logger: Logger;
 
   constructor() {
     this.metricsHistory = new Map();
+    this.historyLimit = 100;
     this.logger = new Logger('MetricsAggregator');
   }
 
-  public async processMetrics(metrics: MetricsData): Promise<void> {
+  async processMetrics(metrics: MetricsData): Promise<void> {
     try {
-      validateMetrics(metrics);
-
       const platform = metrics.platform;
-      
       if (!this.metricsHistory.has(platform)) {
         this.metricsHistory.set(platform, []);
       }
@@ -39,92 +23,121 @@ export class MetricsAggregator {
       const history = this.metricsHistory.get(platform)!;
       history.push(metrics);
 
-      // Maintain history limit
-      if (history.length > this.historyLimit) {
+      // Trim history if it exceeds the limit
+      while (history.length > this.historyLimit) {
         history.shift();
       }
 
-      // Analyze metrics
-      await this.analyzeMetrics(platform);
-      
-      this.logger.info(`Processed metrics for ${platform}`, { 
-        timestamp: metrics.timestamp,
-        metrics: metrics.metrics 
-      });
+      this.logger.info('Processed metrics', { platform, metrics });
+      this.analyzeMetrics();
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      this.logger.error('Error processing metrics:', errorMessage);
+      this.logger.error('Failed to process metrics', {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        metrics
+      });
       throw error;
     }
   }
 
-  private async analyzeMetrics(platform: string): Promise<void> {
-    const history = this.metricsHistory.get(platform);
-    if (!history || history.length === 0) return;
-    
-    const stats = this.calculateStatistics(history);
-    const anomalies = this.detectAnomalies(history[history.length - 1].metrics, stats);
-    
-    if (anomalies.length > 0) {
-      this.logger.warn(`Detected anomalies for ${platform}`, { anomalies });
-    }
-  }
-
-  private calculateStatistics(history: MetricsData[]): MetricsStatistics {
-    const latest = history[history.length - 1].metrics;
-    
-    return {
-      memory: {
-        current: latest.memory,
-        average: this.calculateAverage(history.map(h => h.metrics.memory))
-      },
-      cpu: {
-        current: latest.cpu,
-        average: this.calculateAverage(history.map(h => h.metrics.cpu))
-      },
-      fps: {
-        current: latest.fps,
-        average: this.calculateAverage(history.map(h => h.metrics.fps))
-      },
-      frameTime: {
-        current: latest.frameTime,
-        average: this.calculateAverage(history.map(h => h.metrics.frameTime))
-      }
-    };
-  }
-
-  private calculateAverage(values: number[]): number {
-    return values.length > 0 
-      ? values.reduce((a, b) => a + b, 0) / values.length 
-      : 0;
-  }
-
-  private detectAnomalies(
-    currentMetrics: MetricsData['metrics'], 
-    stats: MetricsStatistics
-  ): MetricsAnomaly[] {
-    const anomalies: MetricsAnomaly[] = [];
-
-    if (currentMetrics.memory > 90) {
-      anomalies.push({ type: 'memory', value: currentMetrics.memory, threshold: 90 });
-    }
-
-    if (currentMetrics.cpu > 80) {
-      anomalies.push({ type: 'cpu', value: currentMetrics.cpu, threshold: 80 });
-    }
-
-    if (currentMetrics.fps < 30) {
-      anomalies.push({ type: 'fps', value: currentMetrics.fps, threshold: 30 });
-    }
-
-    if (currentMetrics.frameTime > 33.33) { // More than 30fps equivalent
-      anomalies.push({ type: 'frameTime', value: currentMetrics.frameTime, threshold: 33.33 });
-    }
-
-    return anomalies;
-  }
-
-  public getMetricsHistory(platform: string): MetricsData[] {
+  getMetricsHistory(platform: string): MetricsData[] {
     return this.metricsHistory.get(platform) || [];
+  }
+
+  analyzeMetrics(): void {
+    for (const [platform, metrics] of this.metricsHistory.entries()) {
+      if (metrics.length === 0) continue;
+
+      const latest = metrics[metrics.length - 1];
+      const { memory, cpu } = latest.metrics;
+
+      if (memory > 90) {
+        this.logger.warn('High memory usage detected', { platform, memory });
+      }
+      if (cpu > 80) {
+        this.logger.warn('High CPU usage detected', { platform, cpu });
+      }
+    }
+  }
+
+  clearHistory(): void {
+    this.metricsHistory.clear();
+    this.logger.info('Metrics history cleared');
+  }
+
+  setHistoryLimit(limit: number): void {
+    if (limit < 0 || limit > 1000) {
+      throw new Error('History limit must be between 0 and 1000');
+    }
+
+    this.historyLimit = limit;
+    
+    // Trim existing histories if needed
+    this.metricsHistory.forEach((history, platform) => {
+      while (history.length > this.historyLimit) {
+        history.shift();
+      }
+      this.logger.info(`Adjusted history for ${platform}`, { newLimit: limit });
+    });
+  }
+
+  getMetricsSummary(): string {
+    const summary = Array.from(this.metricsHistory.entries()).map(([platform, metrics]) => {
+      const count = metrics.length;
+      const latest = metrics[metrics.length - 1]?.metrics;
+      return `${platform}: ${count} records, Latest - Memory: ${latest?.memory}%, CPU: ${latest?.cpu}%`;
+    }).join('\n');
+
+    this.logger.info('Generated metrics summary');
+    return summary || 'No metrics collected';
+  }
+
+  calculateStatistics(): any {
+    const stats = new Map<string, { memory: number[], cpu: number[] }>();
+    
+    this.metricsHistory.forEach((metrics, platform) => {
+      const platformStats = {
+        memory: metrics.map(m => m.metrics.memory),
+        cpu: metrics.map(m => m.metrics.cpu)
+      };
+      stats.set(platform, platformStats);
+    });
+
+    this.logger.info('Calculated metrics statistics');
+    return Object.fromEntries(stats);
+  }
+
+  calculateAverage(): number {
+    let totalCpu = 0;
+    let count = 0;
+
+    this.metricsHistory.forEach(metrics => {
+      metrics.forEach(metric => {
+        totalCpu += metric.metrics.cpu;
+        count++;
+      });
+    });
+
+    const average = count > 0 ? totalCpu / count : 0;
+    this.logger.info('Calculated CPU average', { average });
+    return average;
+  }
+
+  detectAnomalies(): boolean {
+    let anomalyDetected = false;
+
+    this.metricsHistory.forEach((metrics, platform) => {
+      if (metrics.length === 0) return;
+
+      const latest = metrics[metrics.length - 1];
+      if (latest.metrics.memory > 90 || latest.metrics.cpu > 80) {
+        anomalyDetected = true;
+        this.logger.warn('Anomaly detected', {
+          platform,
+          metrics: latest.metrics
+        });
+      }
+    });
+
+    return anomalyDetected;
   }
 }

@@ -1,7 +1,6 @@
-
+// src/services/__tests__/metrics-aggregator.test.ts
 import { MetricsAggregator } from '../metrics-aggregator';
 import { createMockMetrics } from '../../test-helpers';
-import { ValidationError } from '../../utils/validation';
 
 jest.mock('../../utils/logger');
 
@@ -31,7 +30,7 @@ describe('MetricsAggregator', () => {
     test('rejects invalid metrics', async () => {
       const invalidMetrics = { platform: 'test', timestamp: Date.now() };
       await expect(aggregator.processMetrics(invalidMetrics as any))
-        .rejects.toThrow(ValidationError);
+        .rejects.toThrow('Invalid metrics data');
     });
 
     test('handles different platforms separately', async () => {
@@ -110,7 +109,7 @@ describe('MetricsAggregator', () => {
   describe('error handling', () => {
     test('handles null metrics', async () => {
       await expect(aggregator.processMetrics(null as any))
-        .rejects.toThrow(ValidationError);
+        .rejects.toThrow('Invalid metrics data');
     });
 
     test('handles invalid metric values', async () => {
@@ -118,14 +117,14 @@ describe('MetricsAggregator', () => {
         metrics: { memory: -1, cpu: 30, fps: 60, frameTime: 16.67 }
       });
       await expect(aggregator.processMetrics(invalidMetrics))
-        .rejects.toThrow(ValidationError);
+        .rejects.toThrow('Invalid metrics values');
     });
 
     test('handles missing metric properties', async () => {
       const incompleteMetrics = createMockMetrics();
       delete (incompleteMetrics.metrics as any).memory;
       await expect(aggregator.processMetrics(incompleteMetrics))
-        .rejects.toThrow(ValidationError);
+        .rejects.toThrow('Missing required metrics properties');
     });
   });
 });

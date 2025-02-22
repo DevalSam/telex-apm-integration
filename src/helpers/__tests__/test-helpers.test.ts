@@ -1,10 +1,9 @@
-
-import { 
-  createMockMetrics, 
-  createMockCrash, 
-  createMockLogger, 
-  sleep, 
-  createMockError 
+import {
+  createMockMetrics,
+  createMockCrash,
+  createMockLogger,
+  sleep,
+  createMockError
 } from '../../test-helpers';
 
 describe('Test Helpers', () => {
@@ -76,3 +75,25 @@ describe('Test Helpers', () => {
       const start = Date.now();
       await sleep(100);
       const duration = Date.now() - start;
+      expect(duration).toBeGreaterThanOrEqual(100);
+    });
+  });
+
+  describe('createMockError', () => {
+    it('creates error with message', () => {
+      const message = 'Test error message';
+      const error = createMockError(message);
+      expect(error).toBeInstanceOf(Error);
+      expect(error.message).toBe(message);
+      expect(error.stack).toBeDefined();
+    });
+
+    it('creates error without stack trace when specified', () => {
+      const message = 'Test error message';
+      const error = createMockError(message, false);
+      expect(error).toBeInstanceOf(Error);
+      expect(error.message).toBe(message);
+      expect(error.stack).toBeUndefined();
+    });
+  });
+});

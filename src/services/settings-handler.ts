@@ -1,4 +1,3 @@
-
 import { Logger } from '../utils/logger';
 
 export interface APMSettings {
@@ -41,7 +40,10 @@ export class SettingsHandler {
       return this.settings;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      this.logger.error('Failed to load settings:', errorMessage);
+      this.logger.error('Failed to load settings:', {
+        message: errorMessage,
+        context: { method: 'loadSettings' }
+      });
       throw error;
     }
   }
@@ -73,14 +75,22 @@ export class SettingsHandler {
   }
 
   private parseSettings(settings: Partial<APMSettings>): APMSettings {
+    let parsedPlatforms: string[] = this.settings.monitored_platforms;
+    
+    if (settings.monitored_platforms !== undefined) {
+      if (Array.isArray(settings.monitored_platforms)) {
+        parsedPlatforms = settings.monitored_platforms;
+      } else if (typeof settings.monitored_platforms === 'string') {
+        parsedPlatforms = (settings.monitored_platforms as string).split(',').map((platform: string): string => platform.trim());
+      }
+    } else {
+      parsedPlatforms = [];
+    }
+
     return {
       ...this.settings,
       ...settings,
-      monitored_platforms: Array.isArray(settings.monitored_platforms) 
-        ? settings.monitored_platforms 
-        : typeof settings.monitored_platforms === 'string'
-          ? settings.monitored_platforms.split(',')
-          : this.settings.monitored_platforms
+      monitored_platforms: parsedPlatforms
     };
   }
 

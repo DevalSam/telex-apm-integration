@@ -1,6 +1,3 @@
-
-
-
 import { Logger } from '../utils/logger';
 import { MetricsAggregator } from './metrics-aggregator';
 
@@ -45,7 +42,8 @@ export class MetricsCollector {
   }
 
   public stopAllCollections(): void {
-    this.intervals.forEach((interval, platform) => {
+    // Using underscore to indicate intentionally unused parameter
+    this.intervals.forEach((_, platform) => {
       this.stopCollection(platform);
     });
   }
