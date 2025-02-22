@@ -3,39 +3,39 @@
     // ECMAScript target version
     "target": "ES2020",
     "module": "ESNext",
-    "moduleResolution": "node",
-    
+    "moduleResolution": "NodeNext",
+
     // Module resolution and imports
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    
+
     // Type checking
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
     "strictBindCallApply": true,
-    
+
     // Output configuration
     "outDir": "./dist",
     "rootDir": "./src",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    
+
     // Path resolution
     "baseUrl": ".",
     "paths": {
       "*": ["src/*"]
     },
-    
+
     // Additional checks
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    
+
     // Advanced options
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
