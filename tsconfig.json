@@ -2,50 +2,52 @@
   "compilerOptions": {
     // ECMAScript target version
     "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "NodeNext",
+
+    // Module system and resolution
+    "module": "NodeNext", // Use Node.js native ES modules
+    "moduleResolution": "NodeNext", // Use Node.js module resolution
 
     // Module resolution and imports
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
+    "esModuleInterop": true, // Enable ES module interop
+    "allowSyntheticDefaultImports": true, // Allow synthetic default imports
+    "resolveJsonModule": true, // Enable importing JSON files
 
     // Type checking
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
+    "strict": true, // Enable all strict type-checking options
+    "noImplicitAny": true, // Disallow implicit 'any' types
+    "strictNullChecks": true, // Enable strict null checks
+    "strictFunctionTypes": true, // Enable strict function type checks
+    "strictBindCallApply": true, // Enable strict bind, call, and apply checks
 
     // Output configuration
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
+    "outDir": "./dist", // Output directory for compiled files
+    "rootDir": "./src", // Root directory for source files
+    "declaration": true, // Generate .d.ts declaration files
+    "declarationMap": true, // Generate source maps for declarations
+    "sourceMap": true, // Generate source maps for debugging
 
     // Path resolution
-    "baseUrl": ".",
+    "baseUrl": ".", // Base directory for module resolution
     "paths": {
-      "*": ["src/*"]
+      "*": ["src/*"] // Custom path aliases
     },
 
     // Additional checks
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true, // Error on unused local variables
+    "noUnusedParameters": true, // Error on unused function parameters
+    "noImplicitReturns": true, // Error on implicit returns
+    "noFallthroughCasesInSwitch": true, // Error on fallthrough in switch cases
 
     // Advanced options
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "incremental": true
+    "skipLibCheck": true, // Skip type-checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Enforce consistent file naming
+    "incremental": true // Enable incremental compilation
   },
   "include": [
-    "src/**/*"
+    "src/**/*" // Include all files in the src directory
   ],
   "exclude": [
-    "node_modules",
-    "dist"
+    "node_modules", // Exclude node_modules
+    "dist" // Exclude the dist directory
   ]
 }
