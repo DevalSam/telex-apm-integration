@@ -1,27 +1,51 @@
-
-
 {
   "compilerOptions": {
-    "target": "es2018",
-    "module": "commonjs",
+    // ECMAScript target version
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    
+    // Module resolution and imports
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    
+    // Type checking
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    
+    // Output configuration
     "outDir": "./dist",
     "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    
+    // Path resolution
     "baseUrl": ".",
     "paths": {
       "*": ["src/*"]
-    }
+    },
+    
+    // Additional checks
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    
+    // Advanced options
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": true
   },
   "include": [
     "src/**/*"
   ],
   "exclude": [
     "node_modules",
-    "dist",
-    "coverage",
-    "tests"
+    "dist"
   ]
 }
